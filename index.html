@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Preference Similarity | DAA Project</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Music Preference Similarity Analyzer</h1>
+    <p>Design and Analysis of Algorithms • Divide and Conquer: Counting Inversions (O(n log n))</p>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Preset Selection -->
+    <div class="preset-section">
+      <span class="preset-label">Test Presets:</span>
+      <div class="preset-buttons">
+        <button id="preset-high" class="btn btn-sm">Similar Taste (80%)</button>
+        <button id="preset-moderate" class="btn btn-sm">Moderate Match (50%)</button>
+        <button id="preset-opposite" class="btn btn-sm">Opposite Taste (0%)</button>
+        <button id="preset-identical" class="btn btn-sm">Identical (100%)</button>
+      </div>
+    </div>
+
+    <!-- Ranking Columns -->
+    <div class="ranking-grid">
+      <!-- Person A (Reference) -->
+      <div class="ranking-card">
+        <div class="card-header">
+          <h3>Person A (Reference Order)</h3>
+          <span class="tag">Rank 1 to 5</span>
+        </div>
+        <ol id="list-user-a" class="song-list">
+          <!-- Populated by JS -->
+        </ol>
+      </div>
+
+      <!-- Person B (Compared) -->
+      <div class="ranking-card">
+        <div class="card-header">
+          <h3>Person B (Compared User)</h3>
+          <span class="tag">Reorder with ▲ ▼</span>
+        </div>
+        <ol id="list-user-b" class="song-list">
+          <!-- Populated by JS -->
+        </ol>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="action-bar">
+      <button id="btn-calculate" class="btn btn-primary">Calculate Similarity</button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-card" class="results-card">
+      <div class="score-row">
+        <div>
+          <h2>Similarity Score</h2>
+          <p id="score-desc" class="score-desc">Calculated using Inversion Count</p>
+        </div>
+        <div class="score-badge-wrap">
+          <span id="score-val" class="score-number">80%</span>
+          <span id="match-level" class="match-level">High Match</span>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar-container">
+        <div id="progress-fill" class="progress-fill" style="width: 80%;"></div>
+      </div>
+
+      <!-- DAA Metrics Table -->
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">Disagreements (Inversions)</div>
+          <div id="stat-inversions" class="metric-val">2</div>
+          <div class="metric-sub">Pairs ranked in opposite order</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Max Possible Inversions</div>
+          <div class="metric-val">10</div>
+          <div class="metric-sub">Formula: n(n - 1) / 2</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Divide & Conquer Time</div>
+          <div class="metric-val text-blue">O(n log n)</div>
+          <div class="metric-sub">Enhanced Merge Sort</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Brute Force Time</div>
+          <div class="metric-val text-gray">O(n²)</div>
+          <div class="metric-sub">Nested loop comparisons</div>
+        </div>
+      </div>
+
+      <!-- Recommendation Box -->
+      <div class="recommendation-box">
+        <strong>Music Recommendation:</strong>
+        <p id="recommendation-text">Based on Person B's top choice, recommend <em>Blinding Lights</em> to Person A.</p>
+      </div>
+
+      <!-- Step by Step Inversions List -->
+      <div class="inversion-details">
+        <h4>Identified Inversion Pairs (Where preferences flipped):</h4>
+        <div id="inversion-pairs-list" class="pairs-list"></div>
+      </div>
+    </div>
+
+    <!-- Merge Sort Increasing Bar Chart Visualizer Section -->
+    <section id="ms-barchart-section" class="ms-barchart-card">
+      <div class="barchart-header">
+        <div class="barchart-title-group">
+          <div class="barchart-badge">Algorithm Visualizer</div>
+          <h2>Merge Sort Bar Chart Visualizer</h2>
+          <p class="barchart-subtitle">Watch Merge Sort organize vertical bars into increasing order by recursively splitting and merging subarrays in \(O(n \log n)\).</p>
+        </div>
+
+        <div class="barchart-stats-strip">
+          <div class="stat-pill">
+            <span class="stat-pill-label">Comparisons</span>
+            <span id="bar-stat-comparisons" class="stat-pill-val">0</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-label">Inversions Counted</span>
+            <span id="bar-stat-inversions" class="stat-pill-val">0</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-label">Amount of Array</span>
+            <span id="bar-stat-size" class="stat-pill-val">15</span>
+          </div>
+          <div class="stat-pill highlight-pill">
+            <span class="stat-pill-label">Complexity</span>
+            <span class="stat-pill-val">O(n log n)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Panel: Array Size Slider & Speed Toggle -->
+      <div class="barchart-controls-panel">
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="bar-size-slider">Amount of Array:</label>
+            <strong id="bar-size-val">15 bars</strong>
+          </div>
+          <input type="range" id="bar-size-slider" class="range-slider" min="5" max="40" value="15" step="1">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="bar-speed-slider">Speed Toggle:</label>
+            <strong id="bar-speed-val">Normal (1x)</strong>
+          </div>
+          <input type="range" id="bar-speed-slider" class="range-slider" min="1" max="5" value="3" step="1">
+        </div>
+
+        <div class="control-buttons-group">
+          <button id="btn-bar-play" class="btn btn-sm btn-accent-start">▶ Start Sort</button>
+          <button id="btn-bar-step" class="btn btn-sm btn-ctrl">⏭ Step</button>
+          <button id="btn-bar-randomize" class="btn btn-sm btn-ctrl">🎲 Randomize</button>
+          <button id="btn-bar-song-ranks" class="btn btn-sm btn-ctrl">🎵 Use Song Ranks (5)</button>
+          <button id="btn-bar-reset" class="btn btn-sm btn-ctrl">🔄 Reset</button>
+        </div>
+      </div>
+
+      <!-- Live Action Banner -->
+      <div id="bar-action-banner" class="bar-action-banner">
+        <span class="banner-icon" id="bar-action-icon">📊</span>
+        <div class="banner-body">
+          <span class="banner-state-badge" id="bar-phase-badge">Ready</span>
+          <span class="banner-message" id="bar-action-msg">Adjust the amount of array or speed above, then click "Start Sort" to watch Merge Sort arrange bars into increasing order.</span>
+        </div>
+      </div>
+
+      <!-- Legend of Bar Colors -->
+      <div class="barchart-legend">
+        <div class="legend-item"><span class="legend-dot dot-unsorted"></span> Unsorted</div>
+        <div class="legend-item"><span class="legend-dot dot-left"></span> Left Subarray</div>
+        <div class="legend-item"><span class="legend-dot dot-right"></span> Right Subarray</div>
+        <div class="legend-item"><span class="legend-dot dot-compare"></span> Comparing</div>
+        <div class="legend-item"><span class="legend-dot dot-inversion"></span> Inversion (⚡)</div>
+        <div class="legend-item"><span class="legend-dot dot-sorted"></span> Sorted (Increasing)</div>
+      </div>
+
+      <!-- Main Bar Chart Stage -->
+      <div class="barchart-stage-container">
+        <div id="bars-container" class="bars-container">
+          <!-- Dynamic bars will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Educational Concept Footer -->
+      <div class="barchart-footer-note">
+        <strong>DAA Concept:</strong> Merge Sort divides the array into halves until individual bars remain. During the merge step, bars from Left and Right subarrays are compared and placed back in strictly increasing order. Every cross-inversion occurs when a Right bar is placed ahead of remaining Left bars.
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
